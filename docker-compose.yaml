@@ -6,6 +6,8 @@ services:
     container_name: gourmet-nginx
     ports:
       - "8080:80"
+    volumes:
+      - ./backend/src:/var/www/html
     depends_on:
       php:
         condition: service_healthy
@@ -18,7 +20,7 @@ services:
       dockerfile: Dockerfile
     container_name: gourmet-php
     volumes:
-      - ./backend:/var/www/html
+      - ./backend/src:/var/www/html
     depends_on:
       mysql:
         condition: service_healthy
