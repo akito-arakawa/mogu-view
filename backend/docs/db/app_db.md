@@ -20,8 +20,8 @@
 | `name` | VARCHAR(255) | NOT NULL | ユーザー名 |
 | `login_id` | VARCHAR(255) | NOT NULL, UNIQUE | loginID |
 | `password` | VARCHAR(255) | NOT NULL | パスワード（ハッシュ） |
-| `created_at` | TIMESTAMP | NULLABLE | 作成日時 |
-| `updated_at` | TIMESTAMP | NULLABLE | 更新日時 |
+| `created_at` | TIMESTAMP | NOT NULL | 作成日時 |
+| `updated_at` | TIMESTAMP | NOT NULL | 更新日時 |
 
 ### 2. user_tokens（認証トークン）
 
@@ -32,8 +32,8 @@
 | `user_id` | BIGINT UNSIGNED | PK,FK → users.id, NOT NULL | ユーザーID |
 | `token` | VARCHAR(255) | NOT NULL, UNIQUE | 認証トークン（ランダム生成） |
 | `expired_at` | TIMESTAMP | NOT NULL | トークン有効期限 |
-| `created_at` | TIMESTAMP | NULLABLE | トークン発行日時 |
-| `updated_at` | TIMESTAMP | NULLABLE | 更新日時 |
+| `created_at` | TIMESTAMP | NOT NULL | トークン発行日時 |
+| `updated_at` | TIMESTAMP | NOT NULL | 更新日時 |
 
 **インデックス:**
 
@@ -55,8 +55,8 @@
 | `id` | BIGINT UNSIGNED | PK, AUTO_INCREMENT | ID |
 | `user_id` | BIGINT UNSIGNED | FK → users.id, NOT NULL | ユーザーID |
 | `restaurant_id` | VARCHAR(30) | NOT NULL | HotPepper店舗ID（例: J999999999） |
-| `created_at` | TIMESTAMP | NULLABLE | お気に入り登録日時 |
-| `updated_at` | TIMESTAMP | NULLABLE | 更新日時 |
+| `created_at` | TIMESTAMP | NOT NULL | お気に入り登録日時 |
+| `updated_at` | TIMESTAMP | NOT NULL | 更新日時 |
 
 **インデックス:**
 
@@ -78,8 +78,8 @@
 | `id` | BIGINT UNSIGNED | PK, AUTO_INCREMENT | ID |
 | `user_id` | BIGINT UNSIGNED | FK → users.id, NOT NULL | ユーザーID |
 | `restaurant_id` | VARCHAR(30) | NOT NULL | HotPepper店舗ID（例: J999999999） |
-| `created_at` | TIMESTAMP | NULLABLE | 初回閲覧日時 |
-| `updated_at` | TIMESTAMP | NULLABLE | 最終閲覧日時 |
+| `created_at` | TIMESTAMP | NOT NULL | 初回閲覧日時 |
+| `updated_at` | TIMESTAMP | NOT NULL | 最終閲覧日時 |
 
 **インデックス:**
 
