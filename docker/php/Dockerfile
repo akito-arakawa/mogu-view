@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     zip \
     unzip \
-    && docker-php-ext-install pdo_mysql \
+    && docker-php-ext-install pdo_mysql mbstring \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
