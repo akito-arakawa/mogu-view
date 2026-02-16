@@ -18,7 +18,7 @@
 |---|---|---|---|
 | `id` | BIGINT UNSIGNED | PK, AUTO_INCREMENT | ユーザーID |
 | `name` | VARCHAR(255) | NOT NULL | ユーザー名 |
-| `logint_id` | VARCHAR(255) | NOT NULL, UNIQUE | loginID |
+| `login_id` | VARCHAR(255) | NOT NULL, UNIQUE | loginID |
 | `password` | VARCHAR(255) | NOT NULL | パスワード（ハッシュ） |
 | `created_at` | TIMESTAMP | NULLABLE | 作成日時 |
 | `updated_at` | TIMESTAMP | NULLABLE | 更新日時 |
