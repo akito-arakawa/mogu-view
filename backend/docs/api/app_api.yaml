@@ -110,11 +110,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: ログアウトしました
+                $ref: "#/components/schemas/MessageResponse"
+              example:
+                message: ログアウトしました
         "401":
           $ref: "#/components/responses/Unauthorized"
         "500":
@@ -194,11 +192,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: お気に入りに追加しました
+                $ref: "#/components/schemas/MessageResponse"
+              example:
+                message: お気に入りに追加しました
         "401":
           $ref: "#/components/responses/Unauthorized"
         "409":
@@ -206,11 +202,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 既にお気に入りに登録されています
+                $ref: "#/components/schemas/MessageResponse"
+              example:
+                message: 既にお気に入りに登録されています
         "500":
           $ref: "#/components/responses/ServerError"
 
@@ -236,11 +230,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: お気に入りを解除しました
+                $ref: "#/components/schemas/MessageResponse"
+              example:
+                message: お気に入りを解除しました
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
@@ -248,11 +240,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: お気に入りが見つかりません
+                $ref: "#/components/schemas/MessageResponse"
+              example:
+                message: お気に入りが見つかりません
         "500":
           $ref: "#/components/responses/ServerError"
 
@@ -323,15 +313,17 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 閲覧履歴を記録しました
-                  is_favorited:
-                    type: boolean
-                    description: お気に入り登録済みかどうか
-                    example: true
+                allOf:
+                  - $ref: "#/components/schemas/MessageResponse"
+                  - type: object
+                    properties:
+                      is_favorited:
+                        type: boolean
+                        description: お気に入り登録済みかどうか
+                        example: true
+              example:
+                message: 閲覧履歴を記録しました
+                is_favorited: true
         "401":
           $ref: "#/components/responses/Unauthorized"
         "422":
@@ -472,14 +464,10 @@ components:
           example: 1
 
     # === Restaurant ===
-    RestaurantSummary:
+    RestaurantBase:
       type: object
-      description: レストランキャッシュのサマリー情報（一覧表示用）
+      description: レストラン共通フィールド
       properties:
-        id:
-          type: string
-          description: HotPepper店舗ID
-          example: J001234567
         name:
           type: string
           description: 店舗名
@@ -510,84 +498,40 @@ components:
           description: 予算名
           example: 4001～5000円
 
+    RestaurantSummary:
+      description: レストランキャッシュのサマリー情報（一覧表示用）
+      allOf:
+        - $ref: "#/components/schemas/RestaurantBase"
+        - type: object
+          properties:
+            id:
+              type: string
+              description: HotPepper店舗ID
+              example: J001234567
+
     RestaurantViewRequest:
-      type: object
-      required: [name]
       description: |
         フロントエンドがホットペッパーAPIから取得した店舗データを送信する。
         レストランキャッシュの更新と閲覧履歴の記録に使用する。
-      properties:
-        name:
-          type: string
-          description: 店舗名
-          example: レストラン プレミアム 1
-        logo_image:
-          type: string
-          nullable: true
-          description: ロゴ画像URL
-          example: https://imgfp.hotp.jp/IMGH/00/00/P000000.jpg
-        access:
-          type: string
-          nullable: true
-          description: 交通アクセス
-          example: 有楽町駅から徒歩1分
-        catch:
-          type: string
-          nullable: true
-          description: キャッチコピー
-          example: 都会の喧騒を忘れる隠れ家空間で、至福のひとときを。
-        genre_name:
-          type: string
-          nullable: true
-          description: ジャンル名
-          example: 和食
-        budget_name:
-          type: string
-          nullable: true
-          description: 予算名
-          example: 4001～5000円
+      allOf:
+        - $ref: "#/components/schemas/RestaurantBase"
+        - type: object
+          required: [name]
 
     # === Favorites ===
     FavoriteRequest:
-      type: object
-      required: [restaurant_id, name]
       description: |
         お気に入り登録リクエスト。
         レストランキャッシュに未登録の場合は同時にキャッシュを作成するため、店舗情報を含める。
-      properties:
-        restaurant_id:
-          type: string
-          description: HotPepper店舗ID
-          example: J001234567
-        name:
-          type: string
-          description: 店舗名
-          example: レストラン プレミアム 1
-        logo_image:
-          type: string
-          nullable: true
-          description: ロゴ画像URL
-          example: https://imgfp.hotp.jp/IMGH/00/00/P000000.jpg
-        access:
-          type: string
-          nullable: true
-          description: 交通アクセス
-          example: 有楽町駅から徒歩1分
-        catch:
-          type: string
-          nullable: true
-          description: キャッチコピー
-          example: 都会の喧騒を忘れる隠れ家空間で、至福のひとときを。
-        genre_name:
-          type: string
-          nullable: true
-          description: ジャンル名
-          example: 和食
-        budget_name:
-          type: string
-          nullable: true
-          description: 予算名
-          example: 4001～5000円
+      allOf:
+        - $ref: "#/components/schemas/RestaurantBase"
+        - type: object
+          required: [restaurant_id, name]
+          properties:
+            restaurant_id:
+              type: string
+              description: HotPepper店舗ID
+              example: J001234567
 
     FavoriteListResponse:
       type: object
@@ -614,19 +558,7 @@ components:
           description: お気に入り登録日時
           example: "2026-02-17T10:30:00+09:00"
 
-    FavoriteStatusResponse:
-      type: object
-      properties:
-        favorites:
-          type: object
-          description: |
-            店舗IDをキー、お気に入り登録有無（true/false）を値とするオブジェクト
-          additionalProperties:
-            type: boolean
-          example:
-            J001234567: true
-            J001234568: false
-            J001234569: true
+
 
     # === Histories ===
     HistoryListResponse:
@@ -680,6 +612,13 @@ components:
           type: integer
           description: 総件数
           example: 25
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: メッセージ
 
     ErrorResponse:
       type: object
