@@ -29,3 +29,23 @@ export interface PaginationResponse<T> {
     // ページネーションメタデータ
     pagination: Pagination;
 }
+
+/**
+ * ホットペッパーAPIのオフセットベースのページネーション情報を
+ * 共通の Pagination型に変換する。
+ */
+export function toPagePagination(
+    hp: HotPepperPaginationInfo,
+    perPage: number
+): Pagination {
+    const total = hp.results_available;
+    const currentPage = Math.floor((hp.results_start - 1) / perPage) + 1;
+    const lastPage = Math.max(1, Math.ceil(total / perPage));
+
+    return {
+        current_page: currentPage,
+        last_page: lastPage,
+        per_page: perPage,
+        total,
+    };
+}
