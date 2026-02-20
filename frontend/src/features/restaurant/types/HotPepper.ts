@@ -12,8 +12,8 @@
 export interface HotPepperSearchParams {
     page?: number;
     keyword?: string;
-    lat?: number;
-    lng?: number;
+    lat: number;
+    lng: number;
     range: 1 | 2 | 3 | 4 | 5;
 }
 
