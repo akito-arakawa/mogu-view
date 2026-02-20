@@ -32,7 +32,7 @@ export interface HotPepperResponse {
 export interface HotPepperResults {
     api_version: string;
     results_available: number;
-    results_returned: string;
+    results_returned: number;
     results_start: number;
     shop: HotPepperShop[];
 }
@@ -77,6 +77,6 @@ export interface HotPepperShop {
 /** HotPepperレスポンスからページネーション情報だけを抽出した型 */
 export interface HotPepperPaginationInfo {
     results_available: number;
-    results_returned: string;
+    results_returned: number;
     results_start: number;
 }
