@@ -37,7 +37,7 @@ export const API_ENDPOINTS = {
 // ================================================================
 
 export const HOTPEPPER_API_KEY =
-    process.env.NEXT_PUBLIC_HOTPEPPER_API_KEY ?? "";
+    process.env.HOTPEPPER_API_KEY ?? "";
 
 export const HOTPEPPER_API_BASE_URL =
     "https://webservice.recruit.co.jp/hotpepper/gourmet/v1/";
