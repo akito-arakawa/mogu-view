@@ -10,13 +10,11 @@
 
 /** グルメサーチAPIの検索パラメータ */
 export interface HotPepperSearchParams {
+    page?: number;
     keyword?: string;
     lat?: number;
     lng?: number;
-    range?: 1 | 2 | 3 | 4 | 5;
-    genre?: string;
-    start?: number;
-    count?: number;
+    range: 1 | 2 | 3 | 4 | 5;
 }
 
 // ----------------------------------------------------------------
