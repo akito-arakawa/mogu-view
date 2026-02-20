@@ -30,7 +30,11 @@ export const SEARCH_RANGE_OPTIONS = [
     { value: 5, label: "3000m" },
 ] as const;
 
-export const DEFAULT_SEARCH_RANGE = 3 as const;
+// 検索範囲値の型
+export type SearchRangeValue = typeof SEARCH_RANGE_OPTIONS[number]['value'];
+
+// デフォルトの検索範囲
+export const DEFAULT_SEARCH_RANGE: SearchRangeValue = 3 as const;
 
 // ================================================================
 // 認証
