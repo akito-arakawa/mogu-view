@@ -13,6 +13,28 @@ import type {
 } from "@/features/restaurant/types/HotPepper";
 
 // ----------------------------------------------------------------
+// エラーハンドリング
+// ----------------------------------------------------------------
+const ERROR_MESSAGES: Record<number, string> = {
+  1000: "HotPepper API サーバ障害が発生しています。",
+  2000: "HotPepper API の認証に失敗しました（APIキーまたはIPアドレスが無効です）。",
+  3000: "HotPepper API へのリクエストパラメータが不正です。",
+};
+
+/**
+ * HotPepper API レスポンスのエラーを検査し、エラーがあればスローする。
+ * HTTP ステータスは常に 200 のため、レスポンスボディで判定する。
+ */
+export function throwIfHotPepperError(response: HotPepperResponse): void {
+  const errors = response.results.error;
+  if (!errors || errors.length === 0) return;
+
+  const { code, message } = errors[0];
+  const description = ERROR_MESSAGES[code] ?? "不明なエラーが発生しました。";
+  throw new Error(`${description}（code: ${code}, message: ${message}）`);
+}
+
+// ----------------------------------------------------------------
 // 型変換関数
 // ----------------------------------------------------------------
 function toRestaurantSummary(shop: HotPepperShop): RestaurantSummary {
@@ -54,12 +76,9 @@ export async function getHotpepper(
   }
 
   const response = await fetch(url.toString());
-
-  if (!response.ok) {
-    throw new Error(`HotPepper API error: ${response.status}`);
-  }
-
   const raw: HotPepperResponse = await response.json();
+  throwIfHotPepperError(raw);
+
   return {
     data: raw.results.shop.map(toRestaurantSummary),
     pagination: toPagePagination(raw.results, perPage),

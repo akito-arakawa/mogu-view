@@ -21,6 +21,12 @@ export interface HotPepperSearchParams {
 // レスポンス
 // ----------------------------------------------------------------
 
+/** APIエラーオブジェクト */
+export interface HotPepperError {
+    code: number;
+    message: string;
+}
+
 /** APIレスポンスのルート */
 export interface HotPepperResponse {
     results: HotPepperResults;
@@ -29,6 +35,7 @@ export interface HotPepperResponse {
 /** results 直下の構造 */
 export interface HotPepperResults {
     api_version: string;
+    error?: HotPepperError[];
     results_available: number;
     results_returned: number;
     results_start: number;
