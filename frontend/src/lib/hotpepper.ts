@@ -26,10 +26,10 @@ const ERROR_MESSAGES: Record<number, string> = {
  * HTTP ステータスは常に 200 のため、レスポンスボディで判定する。
  */
 export function throwIfHotPepperError(response: HotPepperResponse): void {
-  const errors = response.results.error;
-  if (!errors || errors.length === 0) return;
+  const error = response.results.error;
+  if (!error) return;
 
-  const { code, message } = errors[0];
+  const { code, message } = error;
   const description = ERROR_MESSAGES[code] ?? "不明なエラーが発生しました。";
   throw new Error(`${description}（code: ${code}, message: ${message}）`);
 }
