@@ -1,4 +1,5 @@
 import { type ButtonHTMLAttributes } from "react";
+import { cn } from "@/lib/utils";
 
 type ButtonVariant = "primary" | "dark" | "muted";
 type ButtonSize = "sm" | "md" | "lg";
@@ -40,31 +41,34 @@ export function Button({
   isActive = false,
   fullWidth = false,
   disabled,
-  className = "",
+  className,
   children,
   ...props
 }: ButtonProps) {
   return (
     <button
-      className={`
-        inline-flex items-center justify-center gap-2
-        font-bold tracking-wide
-        transition-all duration-200
-        active:scale-[0.97]
-        focus:outline-none
-        disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100
-        ${variantStyles[variant]}
-        ${isActive && activeStyles[variant] ? activeStyles[variant] : ""}
-        ${sizeStyles[size]}
-        ${fullWidth ? "w-full" : ""}
-        ${className}
-      `}
+      className={cn(
+        "inline-flex items-center justify-center gap-2",
+        "font-bold tracking-wide",
+        "transition-all duration-200",
+        "active:scale-[0.97]",
+        "focus:outline-none",
+        "disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100",
+        variantStyles[variant],
+        isActive && activeStyles[variant],
+        sizeStyles[size],
+        fullWidth && "w-full",
+        className,
+      )}
       disabled={disabled || isLoading}
       {...props}
     >
       {isLoading && (
         <div
-          className={`animate-spin rounded-full border-current/30 border-t-current ${spinnerSizes[size]}`}
+          className={cn(
+            "animate-spin rounded-full border-current/30 border-t-current",
+            spinnerSizes[size],
+          )}
         />
       )}
       {children}
