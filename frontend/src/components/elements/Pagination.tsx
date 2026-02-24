@@ -24,20 +24,18 @@ export function Pagination({ pagination, buildHref, className }: PaginationProps
   return (
     <nav aria-label="ページネーション" className={cn("flex items-center justify-center gap-1", className)}>
       {/* 前へ */}
-      {hasPrev ? (
-        <Link
-          href={buildHref(current_page - 1)}
-          className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
-        >
-          <ChevronLeftIcon />
-          前へ
-        </Link>
-      ) : (
-        <span className="flex cursor-not-allowed items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-gray-300">
-          <ChevronLeftIcon />
-          前へ
-        </span>
-      )}
+      <Link
+        href={buildHref(current_page - 1)}
+        className={cn(
+          "flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+          hasPrev ? "text-gray-500 hover:bg-gray-100 hover:text-gray-700" : "cursor-not-allowed text-gray-300"
+        )}
+        aria-disabled={!hasPrev}
+        tabIndex={hasPrev ? undefined : -1}
+      >
+        <ChevronLeftIcon />
+        前へ
+      </Link>
 
       {/* ページ番号 */}
       {pages.map((page, i) =>
@@ -56,20 +54,18 @@ export function Pagination({ pagination, buildHref, className }: PaginationProps
       )}
 
       {/* 次へ */}
-      {hasNext ? (
-        <Link
-          href={buildHref(current_page + 1)}
-          className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary-light"
-        >
-          次へ
-          <ChevronRightIcon />
-        </Link>
-      ) : (
-        <span className="flex cursor-not-allowed items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-gray-300">
-          次へ
-          <ChevronRightIcon />
-        </span>
-      )}
+      <Link
+        href={buildHref(current_page + 1)}
+        className={cn(
+          "flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+          hasNext ? "text-primary hover:bg-primary-light" : "cursor-not-allowed text-gray-300"
+        )}
+        aria-disabled={!hasNext}
+        tabIndex={hasNext ? undefined : -1}
+      >
+        次へ
+        <ChevronRightIcon />
+      </Link>
     </nav>
   );
 }
