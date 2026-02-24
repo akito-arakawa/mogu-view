@@ -1,5 +1,6 @@
 import { type ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
+import { Spinner } from "./Spinner";
 
 type ButtonVariant = "primary" | "dark" | "muted";
 type ButtonSize = "sm" | "md" | "lg";
@@ -28,10 +29,10 @@ const sizeStyles: Record<ButtonSize, string> = {
   lg: "px-8 py-4 text-base rounded-2xl",
 };
 
-const spinnerSizes: Record<ButtonSize, string> = {
-  sm: "h-3.5 w-3.5 border-[1.5px]",
-  md: "h-5 w-5 border-2",
-  lg: "h-6 w-6 border-2",
+const spinnerSizes: Record<ButtonSize, "sm" | "md" | "lg"> = {
+  sm: "sm",
+  md: "md",
+  lg: "lg",
 };
 
 export function Button({
@@ -63,14 +64,7 @@ export function Button({
       disabled={disabled || isLoading}
       {...props}
     >
-      {isLoading && (
-        <div
-          className={cn(
-            "animate-spin rounded-full border-current/30 border-t-current",
-            spinnerSizes[size],
-          )}
-        />
-      )}
+      {isLoading && <Spinner size={spinnerSizes[size]} />}
       {children}
     </button>
   );
