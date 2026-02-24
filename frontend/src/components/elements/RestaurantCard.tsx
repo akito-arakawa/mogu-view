@@ -64,9 +64,9 @@ export function RestaurantCard({ restaurant, className }: RestaurantCardProps) {
             </span>
           )}
           {access && (
-            <span className="flex items-center gap-1 truncate">
+            <span className="flex min-w-0 items-center gap-1">
               <MapPinIcon />
-              {access}
+              <span className="truncate">{access}</span>
             </span>
           )}
         </div>
