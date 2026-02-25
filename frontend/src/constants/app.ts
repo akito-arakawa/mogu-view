@@ -59,3 +59,10 @@ export const VALIDATION = {
     LOGIN_ID_MAX_LENGTH: 255,
     PASSWORD_MIN_LENGTH: 8,
 } as const;
+
+// ================================================================
+// ホットペッパークレジット
+// ================================================================
+
+export const HOTPEPPER_CREDIT_URL = "https://webservice.recruit.co.jp/";
+export const HOTPEPPER_CREDIT_TEXT = "ホットペッパー グルメ Webサービス";
