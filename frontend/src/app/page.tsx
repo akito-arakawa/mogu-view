@@ -1,7 +1,5 @@
-export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <h1 className="text-2xl font-bold text-primary">グルメサーチ</h1>
-    </div>
-  );
+import { redirect } from "next/navigation";
+
+export default function RootPage() {
+  redirect("/home");
 }
