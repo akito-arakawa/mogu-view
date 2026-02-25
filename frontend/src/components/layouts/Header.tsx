@@ -20,8 +20,8 @@ export function Header() {
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   useEffect(() => {
-    closeMenu();
-  }, [pathname, closeMenu]);
+    setMenuOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     if (menuOpen) {
