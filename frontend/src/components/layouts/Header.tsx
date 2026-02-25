@@ -17,12 +17,6 @@ export function Header() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const closeMenu = useCallback(() => setMenuOpen(false), []);
-
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
-
   useEffect(() => {
     if (menuOpen) {
       document.body.style.overflow = "hidden";
@@ -111,7 +105,7 @@ export function Header() {
         <>
           <div
             className="fixed inset-0 top-[65px] z-40 bg-black/20 backdrop-blur-sm md:hidden"
-            onClick={closeMenu}
+            onClick={() => setMenuOpen(false)}
             aria-hidden
           />
           <nav className="fixed inset-x-0 top-[65px] z-50 border-b border-gray-100 bg-white px-6 pb-6 pt-4 shadow-xl md:hidden">
@@ -126,7 +120,7 @@ export function Header() {
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      onClick={closeMenu}
+                      onClick={() => setMenuOpen(false)}
                       className={cn(
                         "block rounded-xl px-4 py-3 text-[15px] font-medium transition-colors",
                         isActive
