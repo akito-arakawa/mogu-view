@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { DEFAULT_LAT, DEFAULT_LNG } from "@/constants/app";
 
 export interface GeoPosition {
@@ -17,6 +17,9 @@ interface UseGeolocationReturn {
 }
 
 export function useGeolocation(): UseGeolocationReturn {
+  const isMounted = useRef(false);
+  const locateRef = useRef<() => void>(() => {});
+
   const [position, setPosition] = useState<GeoPosition>({
     lat: DEFAULT_LAT,
     lng: DEFAULT_LNG,
@@ -25,7 +28,7 @@ export function useGeolocation(): UseGeolocationReturn {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const locate = useCallback(() => {
+  locateRef.current = () => {
     if (!navigator.geolocation) {
       setError("お使いのブラウザは位置情報に対応していません。");
       setLoading(false);
@@ -62,11 +65,19 @@ export function useGeolocation(): UseGeolocationReturn {
         maximumAge: 60_000,
       },
     );
+  };
+
+  const locate = useCallback(() => {
+    locateRef.current();
   }, []);
 
   useEffect(() => {
-    locate();
-  }, [locate]);
+    isMounted.current = true;
+    locateRef.current();
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   return { position, loading, error, retry: locate };
 }
