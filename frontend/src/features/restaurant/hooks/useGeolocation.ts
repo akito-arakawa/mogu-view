@@ -28,44 +28,46 @@ export function useGeolocation(): UseGeolocationReturn {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  locateRef.current = () => {
-    if (!navigator.geolocation) {
-      setError("お使いのブラウザは位置情報に対応していません。");
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setPosition({
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-          accuracy: pos.coords.accuracy,
-        });
+  useEffect(() => {
+    locateRef.current = () => {
+      if (!navigator.geolocation) {
+        setError("お使いのブラウザは位置情報に対応していません。");
         setLoading(false);
-      },
-      (err) => {
-        const messages: Record<number, string> = {
-          [GeolocationPositionError.PERMISSION_DENIED]:
-            "位置情報の取得が許可されていません。",
-          [GeolocationPositionError.POSITION_UNAVAILABLE]:
-            "位置情報を取得できませんでした。",
-          [GeolocationPositionError.TIMEOUT]:
-            "位置情報の取得がタイムアウトしました。",
-        };
-        setError(messages[err.code] ?? "位置情報の取得に失敗しました。");
-        setLoading(false);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10_000,
-        maximumAge: 60_000,
-      },
-    );
-  };
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setPosition({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+            accuracy: pos.coords.accuracy,
+          });
+          setLoading(false);
+        },
+        (err) => {
+          const messages: Record<number, string> = {
+            [GeolocationPositionError.PERMISSION_DENIED]:
+              "位置情報の取得が許可されていません。",
+            [GeolocationPositionError.POSITION_UNAVAILABLE]:
+              "位置情報を取得できませんでした。",
+            [GeolocationPositionError.TIMEOUT]:
+              "位置情報の取得がタイムアウトしました。",
+          };
+          setError(messages[err.code] ?? "位置情報の取得に失敗しました。");
+          setLoading(false);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10_000,
+          maximumAge: 60_000,
+        },
+      );
+    };
+  });
 
   const locate = useCallback(() => {
     locateRef.current();
