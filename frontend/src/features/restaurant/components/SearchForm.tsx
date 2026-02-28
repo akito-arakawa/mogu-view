@@ -11,6 +11,7 @@ import {
   SEARCH_RANGE_OPTIONS,
   DEFAULT_SEARCH_RANGE,
   type SearchRangeValue,
+  DEFAULT_SEARCH_RANGE_METERS,
 } from "@/constants/app";
 
 const SearchMap = dynamic(
@@ -19,7 +20,7 @@ const SearchMap = dynamic(
       (mod) => mod.SearchMap,
     ),
   {
-    ssr: false,   // サーバーサイドレンダリングを無効化(マップはクライアントサイドでのみレンダリングするため)
+    ssr: false,
     loading: () => (
       <div className="flex h-[280px] items-center justify-center rounded-2xl bg-gray-50 sm:h-[340px]">
         <Spinner size="lg" />
@@ -47,11 +48,12 @@ function SearchIcon() {
 
 export default function SearchForm() {
   const router = useRouter();
-  const { position, loading: geoLoading } = useGeolocation();
+  const { position, loading: geoLoading, error: geoError } = useGeolocation();
   const [range, setRange] = useState<SearchRangeValue>(DEFAULT_SEARCH_RANGE);
   const [keyword, setKeyword] = useState("");
   const [isSearching, startSearchTransition] = useTransition();
-  
+
+  // 検索ボタンクリック時の処理
   const handleSearch = useCallback(() => {
     startSearchTransition(() => {
       const params = new URLSearchParams({
@@ -66,6 +68,10 @@ export default function SearchForm() {
     });
   }, [router, position, range, keyword, startSearchTransition]);
 
+  // 検索範囲のメートル数を取得
+  const radiusMeters =
+    SEARCH_RANGE_OPTIONS.find((opt) => opt.value === range)?.meters ?? DEFAULT_SEARCH_RANGE_METERS;
+
   return (
     <div className="mx-auto max-w-2xl px-5 py-8">
       <div className="mb-6">
@@ -74,7 +80,6 @@ export default function SearchForm() {
           現在地とキーワードから周辺のお店を検索できます
         </p>
       </div>
-
       <div className="space-y-5">
         {geoLoading ? (
           <div className="flex h-[280px] items-center justify-center rounded-2xl bg-gray-50 sm:h-[340px]">
@@ -84,9 +89,23 @@ export default function SearchForm() {
             </div>
           </div>
         ) : (
-          <SearchMap position={position} radiusMeters={SEARCH_RANGE_OPTIONS.find((opt) => opt.value === range)?.meters ?? 0} />
+          <>
+            {geoError && (
+              <div className="flex items-center gap-3 rounded-xl bg-amber-50 px-4 py-3 text-sm ring-1 ring-amber-200">
+                <span className="text-lg">📍</span>
+                <div>
+                  <p className="font-medium text-amber-800">
+                    東京駅付近で検索します
+                  </p>
+                  <p className="mt-0.5 text-[12px] text-amber-600">
+                    {geoError}
+                  </p>
+                </div>
+              </div>
+            )}
+            <SearchMap position={position} radiusMeters={radiusMeters} />
+          </>
         )}
-
         <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
           <p className="mb-3 text-sm font-bold text-gray-600">検索範囲</p>
           <div className="grid grid-cols-5 gap-2">
@@ -104,7 +123,6 @@ export default function SearchForm() {
             ))}
           </div>
         </div>
-
         <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
           <Input
             label="キーワード（任意）"
@@ -117,7 +135,6 @@ export default function SearchForm() {
             }}
           />
         </div>
-
         <Button
           variant="primary"
           size="lg"
