@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/", label: "ホーム" },
+  { href: "/home", label: "ホーム" },
   { href: "/search", label: "お店を探す" },
   { href: "/roulette", label: "ルーレット" },
   { href: "/favorites", label: "お気に入り" },
@@ -71,8 +71,8 @@ export function Header() {
         <nav className="hidden items-center gap-8 text-[14px] font-medium text-gray-500 md:flex">
           {NAV_ITEMS.map((item) => {
             const isActive =
-              item.href === "/"
-                ? pathname === "/"
+              item.href === "/home"
+                ? pathname === "/home"
                 : pathname.startsWith(item.href);
 
             return (
@@ -112,8 +112,8 @@ export function Header() {
             <ul className="flex flex-col gap-1">
               {NAV_ITEMS.map((item) => {
                 const isActive =
-                  item.href === "/"
-                    ? pathname === "/"
+                  item.href === "/home"
+                    ? pathname === "/home"
                     : pathname.startsWith(item.href);
 
                 return (
