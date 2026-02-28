@@ -43,6 +43,9 @@ export type SearchRangeValue = typeof SEARCH_RANGE_OPTIONS[number]['value'];
 // デフォルトの検索範囲
 export const DEFAULT_SEARCH_RANGE: SearchRangeValue = 3 as const;
 
+// デフォルトの検索範囲のメートル数
+export const DEFAULT_SEARCH_RANGE_METERS = 1000 as const;
+
 // ================================================================
 // 認証
 // ================================================================

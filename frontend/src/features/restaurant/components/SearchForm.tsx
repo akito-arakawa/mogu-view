@@ -11,6 +11,7 @@ import {
   SEARCH_RANGE_OPTIONS,
   DEFAULT_SEARCH_RANGE,
   type SearchRangeValue,
+  DEFAULT_SEARCH_RANGE_METERS,
 } from "@/constants/app";
 
 const SearchMap = dynamic(
@@ -69,7 +70,7 @@ export default function SearchForm() {
 
   // 検索範囲のメートル数を取得
   const radiusMeters =
-    SEARCH_RANGE_OPTIONS.find((opt) => opt.value === range)?.meters ?? 1000;
+    SEARCH_RANGE_OPTIONS.find((opt) => opt.value === range)?.meters ?? DEFAULT_SEARCH_RANGE_METERS;
 
   return (
     <div className="mx-auto max-w-2xl px-5 py-8">
