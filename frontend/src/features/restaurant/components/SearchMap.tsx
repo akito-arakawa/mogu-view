@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import L from "leaflet";
 import {
   MapContainer,
@@ -29,20 +29,11 @@ function MapUpdater({
   radiusMeters: number;
 }) {
   const map = useMap();
-  const initializedRef = useRef(false);
 
   useEffect(() => {
-    const center = L.latLng(position.lat, position.lng);
-    const bounds = center.toBounds(radiusMeters * 2);
-
-    if (!initializedRef.current && position.lat !== 0) {
-      map.fitBounds(bounds, { padding: [30, 30], animate: true });
-      initializedRef.current = true;
+    if (position.lat === 0) {
+      return;
     }
-  }, [map, position]);
-
-  useEffect(() => {
-    if (!initializedRef.current) return;
     const center = L.latLng(position.lat, position.lng);
     const bounds = center.toBounds(radiusMeters * 2);
     map.fitBounds(bounds, { padding: [30, 30], animate: true });

@@ -30,11 +30,11 @@ export const DEFAULT_LNG = 139.767125;
 // ================================================================
 
 export const SEARCH_RANGE_OPTIONS = [
-    { value: 1, label: "300m" },
-    { value: 2, label: "500m" },
-    { value: 3, label: "1000m" },
-    { value: 4, label: "2000m" },
-    { value: 5, label: "3000m" },
+    { value: 1, label: "300m", meters: 300 },
+    { value: 2, label: "500m", meters: 500 },
+    { value: 3, label: "1km", meters: 1000 },
+    { value: 4, label: "2km", meters: 2000 },
+    { value: 5, label: "3km", meters: 3000 },
 ] as const;
 
 // 検索範囲値の型

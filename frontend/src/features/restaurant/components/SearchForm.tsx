@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useTransition } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
@@ -28,22 +28,6 @@ const SearchMap = dynamic(
   },
 );
 
-const RANGE_LABELS: Record<number, string> = {
-  1: "300m",
-  2: "500m",
-  3: "1km",
-  4: "2km",
-  5: "3km",
-};
-
-const RANGE_METERS: Record<number, number> = {
-  1: 300,
-  2: 500,
-  3: 1000,
-  4: 2000,
-  5: 3000,
-};
-
 function SearchIcon() {
   return (
     <svg
@@ -66,20 +50,21 @@ export default function SearchForm() {
   const { position, loading: geoLoading } = useGeolocation();
   const [range, setRange] = useState<SearchRangeValue>(DEFAULT_SEARCH_RANGE);
   const [keyword, setKeyword] = useState("");
-  const [searching, setSearching] = useState(false);
-
+  const [isSearching, startSearchTransition] = useTransition();
+  
   const handleSearch = useCallback(() => {
-    setSearching(true);
-    const params = new URLSearchParams({
-      lat: position.lat.toString(),
-      lng: position.lng.toString(),
-      range: range.toString(),
+    startSearchTransition(() => {
+      const params = new URLSearchParams({
+        lat: position.lat.toString(),
+        lng: position.lng.toString(),
+        range: range.toString(),
+      });
+      if (keyword.trim()) {
+        params.set("keyword", keyword.trim());
+      }
+      router.push(`/search/results?${params.toString()}`);
     });
-    if (keyword.trim()) {
-      params.set("keyword", keyword.trim());
-    }
-    router.push(`/search/results?${params.toString()}`);
-  }, [router, position, range, keyword]);
+  }, [router, position, range, keyword, startSearchTransition]);
 
   return (
     <div className="mx-auto max-w-2xl px-5 py-8">
@@ -99,7 +84,7 @@ export default function SearchForm() {
             </div>
           </div>
         ) : (
-          <SearchMap position={position} radiusMeters={RANGE_METERS[range]} />
+          <SearchMap position={position} radiusMeters={SEARCH_RANGE_OPTIONS.find((opt) => opt.value === range)?.meters ?? 0} />
         )}
 
         <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
@@ -114,7 +99,7 @@ export default function SearchForm() {
                 onClick={() => setRange(opt.value)}
                 className="w-full justify-center py-2.5 text-sm"
               >
-                {RANGE_LABELS[opt.value] ?? opt.label}
+                {opt.label}
               </Button>
             ))}
           </div>
@@ -137,7 +122,7 @@ export default function SearchForm() {
           variant="primary"
           size="lg"
           fullWidth
-          isLoading={searching}
+          isLoading={isSearching}
           onClick={handleSearch}
           disabled={geoLoading}
           className="text-base"
