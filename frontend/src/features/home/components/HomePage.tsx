@@ -41,53 +41,39 @@ export function HomePage() {
             </div>
 
             {/* フローティングカード群 */}
-            <FloatingCard className="-top-2 right-8 lg:right-16">
-              <span className="text-lg">📍</span>
-              <div>
-                <p className="text-[13px] font-bold text-foreground">
-                  現在地から検索
-                </p>
-                <p className="text-[11px] text-gray-400">
-                  ワンタップで周辺検索
-                </p>
-              </div>
-            </FloatingCard>
-
-            <FloatingCard className="right-0 top-20 lg:-right-4">
-              <span className="text-lg">🔍</span>
-              <div>
-                <p className="text-[13px] font-bold text-foreground">
-                  キーワード検索
-                </p>
-                <p className="text-[11px] text-gray-400">
-                  ジャンル・予算で絞り込み
-                </p>
-              </div>
-            </FloatingCard>
-
-            <FloatingCard className="-bottom-2 left-4 lg:left-12">
-              <span className="text-lg">⭐</span>
-              <div>
-                <p className="text-[13px] font-bold text-foreground">
-                  お気に入り保存
-                </p>
-                <p className="text-[11px] text-gray-400">
-                  ワンタップで保存
-                </p>
-              </div>
-            </FloatingCard>
-
-            <FloatingCard className="bottom-8 right-0 lg:right-4">
-              <span className="text-lg">📋</span>
-              <div>
-                <p className="text-[13px] font-bold text-foreground">
-                  閲覧履歴
-                </p>
-                <p className="text-[11px] text-gray-400">
-                  自動で記録
-                </p>
-              </div>
-            </FloatingCard>
+            {[{
+              emoji: "📍",
+              title: "現在地から検索",
+              description: "ワンタップで周辺検索",
+              className: "-top-2 right-8 lg:right-16",
+            }, {
+              emoji: "🔍",
+              title: "キーワード検索",
+              description: "ジャンル・予算で絞り込み",
+              className: "right-0 top-20 lg:-right-4",
+            }, {
+              emoji: "⭐",
+              title: "お気に入り保存",
+              description: "ワンタップで保存",
+              className: "-bottom-2 left-4 lg:left-12",
+            }, {
+              emoji: "📋",
+              title: "閲覧履歴",
+              description: "自動で記録",
+              className: "bottom-8 right-0 lg:right-4",
+            }].map((feature) => (
+              <FloatingCard key={feature.title} className={feature.className}>
+                <span className="text-lg">{feature.emoji}</span>
+                <div>
+                  <p className="text-[13px] font-bold text-foreground">
+                    {feature.title}
+                  </p>
+                  <p className="text-[11px] text-gray-400">
+                    {feature.description}
+                  </p>
+                </div>
+              </FloatingCard>
+            ))}
 
           </div>
         </div>
@@ -117,7 +103,7 @@ export function HomePage() {
                   href={f.href}
                   className="mt-4 inline-block text-[13px] font-semibold text-primary transition hover:text-primary-hover"
                 >
-                  Learn More →
+                  詳しく見る →
                 </Link>
               )}
             </div>
