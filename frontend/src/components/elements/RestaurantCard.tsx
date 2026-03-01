@@ -31,7 +31,7 @@ export function RestaurantCard({ restaurant, className }: RestaurantCardProps) {
       {/* 左: サムネイル */}
       <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-xl bg-muted">
         <Image
-          src={logoImage || photoUrl}
+          src={logoImage || photoUrl || ""}
           alt={name}
           fill
           sizes="112px"
