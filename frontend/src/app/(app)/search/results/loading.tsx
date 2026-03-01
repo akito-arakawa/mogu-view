@@ -1,5 +1,4 @@
-import { Skeleton } from "@/components/ui/Skeleton";
-import { CardSkeletonGrid } from "@/components/ui/Skeleton";
+import { CardSkeletonGrid, Skeleton } from "@/components/ui/Skeleton";
 
 function HeaderSkeleton() {
   return (
