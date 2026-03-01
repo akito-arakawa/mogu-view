@@ -28,7 +28,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/80 backdrop-blur-lg">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-3 py-4 md:px-6">
         {/* ─── SP: ハンバーガーボタン（左） / PC: ロゴ（左） ─── */}
         <div className="flex items-center gap-2.5">
           <button
@@ -46,10 +46,10 @@ export function Header() {
             className="hidden items-center gap-2.5 md:flex"
           >
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-base font-bold text-white shadow-md shadow-orange-500/30">
-              G
+              M
             </span>
             <span className="text-lg font-bold tracking-tight text-foreground">
-              グルメサーチ
+              もぐビュー
             </span>
           </Link>
         </div>
@@ -60,10 +60,10 @@ export function Header() {
           className="absolute left-1/2 flex -translate-x-1/2 items-center gap-2.5 md:hidden"
         >
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-base font-bold text-white shadow-md shadow-orange-500/30">
-            G
+            M
           </span>
-          <span className="text-lg font-bold tracking-tight text-foreground">
-            グルメサーチ
+          <span className="hidden text-lg font-bold tracking-tight text-foreground min-[400px]:inline">
+            もぐビュー
           </span>
         </Link>
 
@@ -94,7 +94,7 @@ export function Header() {
         {/* ─── ログインボタン（右・常時表示） ─── */}
         <Link
           href="/login"
-          className="rounded-full border-2 border-primary px-5 py-1.5 text-sm font-bold text-primary transition-all hover:bg-primary hover:text-white hover:shadow-lg hover:shadow-orange-500/25"
+          className="shrink-0 rounded-full border-2 border-primary px-3 py-1.5 text-xs font-bold text-primary transition-all hover:bg-primary hover:text-white hover:shadow-lg hover:shadow-orange-500/25 min-[400px]:px-5 min-[400px]:text-sm"
         >
           ログイン
         </Link>
