@@ -37,11 +37,18 @@ export function throwIfHotPepperError(response: HotPepperResponse): void {
 // ----------------------------------------------------------------
 // 型変換関数
 // ----------------------------------------------------------------
+const NOIMAGE_PATTERN = /noimage/i;
+
 function toRestaurantSummary(shop: HotPepperShop): RestaurantSummary {
+  const logoImage = NOIMAGE_PATTERN.test(shop.logo_image)
+    ? ""
+    : shop.logo_image;
+
   return {
     id: shop.id,
     name: shop.name,
-    logoImage: shop.logo_image,
+    logoImage,
+    photoUrl: shop.photo.pc.m,
     access: shop.access,
     catchCopy: shop.catch,
     genreName: shop.genre.name,

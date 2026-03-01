@@ -15,7 +15,7 @@ interface RestaurantCardProps {
  * CardSkeleton と同一レイアウトを維持すること。
  */
 export function RestaurantCard({ restaurant, className }: RestaurantCardProps) {
-  const { id, name, logoImage, genreName, budgetName, access, catchCopy } =
+  const { id, name, logoImage, photoUrl, genreName, budgetName, access, catchCopy } =
     restaurant;
 
   return (
@@ -31,7 +31,7 @@ export function RestaurantCard({ restaurant, className }: RestaurantCardProps) {
       {/* 左: サムネイル */}
       <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-xl bg-muted">
         <Image
-          src={logoImage}
+          src={logoImage || photoUrl}
           alt={name}
           fill
           sizes="112px"
