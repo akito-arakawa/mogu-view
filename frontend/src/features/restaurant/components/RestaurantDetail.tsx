@@ -32,15 +32,14 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 
 // 店舗情報を作成
 function buildInfoRows(shop: HotPepperShop) {
-  const rows: { label: string; value: string }[] = [];
-  if (shop.address) rows.push({ label: "住所", value: shop.address });
-  if (shop.open) rows.push({ label: "営業時間", value: shop.open });
-  if (shop.access) rows.push({ label: "アクセス", value: shop.access });
-  if (shop.budget.name) rows.push({ label: "予算", value: shop.budget.name });
-  if (shop.close) rows.push({ label: "定休日", value: shop.close });
-  return rows;
+  return [
+    { label: "住所", value: shop.address },
+    { label: "営業時間", value: shop.open },
+    { label: "アクセス", value: shop.access },
+    { label: "予算", value: shop.budget.name },
+    { label: "定休日", value: shop.close },
+  ].filter((row) => row.value);
 }
-
 
 export function RestaurantDetail({ shop }: RestaurantDetailProps) {
   const infoRows = buildInfoRows(shop);
