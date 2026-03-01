@@ -72,3 +72,41 @@ export const VALIDATION = {
 
 export const HOTPEPPER_CREDIT_URL = "https://webservice.recruit.co.jp/";
 export const HOTPEPPER_CREDIT_TEXT = "ホットペッパー グルメ Webサービス";
+
+// ================================================================
+// ホーム画面のカード
+// ================================================================
+export const FEATURES = [
+    {
+      emoji: "📍",
+      bg: "bg-red-50",
+      title: "現在地検索",
+      description:
+        "GPSを使って今いる場所の周辺からお店を探せます。300m〜3kmまで検索範囲も自由自在。",
+      href: "/search",
+    },
+    {
+      emoji: "🔍",
+      bg: "bg-blue-50",
+      title: "キーワード検索",
+      description:
+        "食べたい料理やお店の雰囲気で検索。ジャンルや予算での絞り込みにも対応。",
+      href: "/search",
+    },
+    {
+      emoji: "⭐",
+      bg: "bg-amber-50",
+      title: "お気に入り保存",
+      description:
+        "気になるお店はワンタップで保存。いつでもマイページから確認できます。",
+      href: "/favorites",
+    },
+    {
+      emoji: "📋",
+      bg: "bg-emerald-50",
+      title: "閲覧履歴",
+      description:
+        "過去に見たお店を自動で記録。「あのお店なんだっけ？」がなくなります。",
+      href: "/history",
+    },
+  ] as const;
