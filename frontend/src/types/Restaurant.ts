@@ -6,6 +6,7 @@
 export interface RestaurantBase {
     name: string;
     logoImage: string;
+    photoUrl: string;
     access?: string;
     catchCopy?: string;
     genreName?: string;
