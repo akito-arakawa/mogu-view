@@ -1,13 +1,19 @@
 "use client";
+import { useEffect } from "react";
 
 import { ErrorMessage } from "@/components/elements/ErrorMessage";
 
 export default function SearchResultsError({
   reset,
+  error,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  useEffect(() => {
+    console.error(error);
+  }, [error]);
+
   return (
     <div className="mx-auto max-w-6xl px-6 pb-16 pt-6">
       <ErrorMessage
