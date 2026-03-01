@@ -4,7 +4,7 @@ interface SkeletonProps {
   className?: string;
 }
 
-function Skeleton({ className }: SkeletonProps) {
+export function Skeleton({ className }: SkeletonProps) {
   return (
     <div
       className={cn(
@@ -46,7 +46,7 @@ export function CardSkeleton() {
   );
 }
 
-export function CardSkeletonGrid({ count = 10 }: { count?: number }) {
+export function CardSkeletonGrid({ count = 6 }: { count?: number }) {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
       {Array.from({ length: count }, (_, i) => (
