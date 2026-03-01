@@ -1,0 +1,649 @@
+openapi: "3.0.3"
+
+info:
+  title: グルメサーチアプリ API
+  description: |
+    グルメサーチアプリのバックエンドREST API仕様書。
+
+    ## 概要
+    - レストラン検索はフロントエンドからホットペッパーグルメAPIを直接呼び出す
+    - バックエンドは認証・お気に入り・閲覧履歴・レストランキャッシュを管理する
+    - 認証はトークンベース（`Authorization: Bearer {token}`）
+
+    ## 認証
+    ログインAPI成功時に返却されるトークンを、以降のリクエストの `Authorization` ヘッダーに付与する。
+    ```
+    Authorization: Bearer {token}
+    ```
+  version: "1.0.0"
+
+servers:
+  - url: http://localhost/api/v1
+    description: ローカル開発環境
+
+tags:
+  - name: Auth
+    description: 認証（ユーザー登録・ログイン・ログアウト）
+  - name: Favorites
+    description: お気に入り管理
+  - name: Histories
+    description: 閲覧履歴管理
+  - name: Restaurants
+    description: レストランキャッシュ・閲覧記録
+  - name: User
+    description: ユーザー情報
+
+# ==============================================================
+# Paths
+# ==============================================================
+paths:
+  # --------------------------------------------------
+  # Auth
+  # --------------------------------------------------
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: ユーザー登録
+      description: 新規ユーザーを登録し、認証トークンを返却する。
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: 登録成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "422":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: ログイン
+      description: ログインIDとパスワードで認証し、トークンを返却する。
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: ログイン成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: 認証失敗
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: ログアウト
+      description: 認証トークンを無効化する。
+      operationId: logout
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: ログアウト成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+              example:
+                message: ログアウトしました
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  # --------------------------------------------------
+  # User
+  # --------------------------------------------------
+  /users/me:
+    get:
+      tags: [User]
+      summary: マイページ情報取得
+      description: |
+        ログインユーザーの情報と保存データ（お気に入り数・閲覧履歴数）を返却する。
+        未認証（ゲストユーザー）の場合は401を返す。
+      operationId: getMyPage
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MyPageResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  # --------------------------------------------------
+  # Favorites
+  # --------------------------------------------------
+  /favorites:
+    get:
+      tags: [Favorites]
+      summary: お気に入り一覧取得
+      description: |
+        ユーザーのお気に入り店舗一覧をページネーション付きで取得する。
+        1ページあたり10件。登録日時の降順でソートする。
+      operationId: getFavorites
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/PageParam"
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FavoriteListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+    post:
+      tags: [Favorites]
+      summary: お気に入り登録
+      description: |
+        指定した店舗をお気に入りに追加する。
+        レストランキャッシュにデータがない場合は同時に作成する。
+        既に登録済みの場合は409を返す。
+      operationId: addFavorite
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FavoriteRequest"
+      responses:
+        "201":
+          description: 登録成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+              example:
+                message: お気に入りに追加しました
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "409":
+          description: 既にお気に入り登録済み
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+              example:
+                message: 既にお気に入りに登録されています
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  /favorites/{restaurantId}:
+    delete:
+      tags: [Favorites]
+      summary: お気に入り解除
+      description: 指定した店舗のお気に入りを解除する。
+      operationId: removeFavorite
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: restaurantId
+          in: path
+          required: true
+          description: HotPepper店舗ID
+          schema:
+            type: string
+            example: J001234567
+      responses:
+        "200":
+          description: 解除成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+              example:
+                message: お気に入りを解除しました
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: お気に入りが見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+              example:
+                message: お気に入りが見つかりません
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  # --------------------------------------------------
+  # Histories
+  # --------------------------------------------------
+  /histories:
+    get:
+      tags: [Histories]
+      summary: 閲覧履歴一覧取得
+      description: |
+        ユーザーの閲覧履歴をページネーション付きで取得する。
+        1ページあたり10件。最終閲覧日時（updated_at）の降順でソートする。
+      operationId: getHistories
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/PageParam"
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HistoryListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+  # --------------------------------------------------
+  # Restaurants
+  # --------------------------------------------------
+  /restaurants/{restaurantId}/view:
+    post:
+      tags: [Restaurants]
+      summary: 店舗詳細閲覧記録
+      description: |
+        店舗詳細画面を開いた際に、ログイン済みユーザーの場合のみ呼び出す。
+        未ログインユーザーはホットペッパーAPIのデータをフロントで直接表示するため、このAPIは呼び出さない。
+
+        処理内容：
+        1. レストランキャッシュテーブル（restaurants）にデータをUPSERT
+        2. 閲覧履歴テーブル（browse_histories）にデータをUPSERT
+        3. お気に入り登録状態を返却（ハートマーク表示用）
+
+        フロントエンドからホットペッパーAPIで取得済みの店舗情報をリクエストボディで送信する。
+      operationId: recordView
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: restaurantId
+          in: path
+          required: true
+          description: HotPepper店舗ID
+          schema:
+            type: string
+            example: J001234567
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RestaurantViewRequest"
+      responses:
+        "200":
+          description: 記録成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/MessageResponse"
+                  - type: object
+                    properties:
+                      is_favorited:
+                        type: boolean
+                        description: お気に入り登録済みかどうか
+                        example: true
+              example:
+                message: 閲覧履歴を記録しました
+                is_favorited: true
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "422":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+# ==============================================================
+# Components
+# ==============================================================
+components:
+  # --------------------------------------------------
+  # Security Schemes
+  # --------------------------------------------------
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: ログイン時に取得したトークンを指定
+
+  # --------------------------------------------------
+  # Parameters
+  # --------------------------------------------------
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      required: false
+      description: ページ番号（1始まり、デフォルト1）
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+        example: 1
+
+  # --------------------------------------------------
+  # Responses
+  # --------------------------------------------------
+  responses:
+    Unauthorized:
+      description: 認証エラー（トークン未送信・無効・期限切れ）
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    ServerError:
+      description: サーバーエラー
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: サーバーエラー
+
+  # --------------------------------------------------
+  # Schemas
+  # --------------------------------------------------
+  schemas:
+    # === Auth ===
+    RegisterRequest:
+      type: object
+      required: [name, login_id, password]
+      properties:
+        name:
+          type: string
+          description: ユーザー名
+          maxLength: 255
+          example: 山田太郎
+        login_id:
+          type: string
+          description: ログインID
+          maxLength: 255
+          example: yamada_taro
+        password:
+          type: string
+          description: パスワード（8文字以上）
+          format: password
+          minLength: 8
+          example: password123
+
+    LoginRequest:
+      type: object
+      required: [login_id, password]
+      properties:
+        login_id:
+          type: string
+          description: ログインID
+          example: yamada_taro
+        password:
+          type: string
+          description: パスワード
+          format: password
+          example: password123
+
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: 認証トークン
+          example: 3d2f8a9b1c4e5f6a7b8c9d0e1f2a3b4c
+
+    # === User ===
+    UserSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ユーザーID
+          example: 1
+        name:
+          type: string
+          description: ユーザー名
+          example: 山田太郎
+        login_id:
+          type: string
+          description: ログインID
+          example: yamada_taro
+
+    MyPageResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/UserSummary"
+        favorites_count:
+          type: integer
+          description: お気に入り数
+          example: 1
+        histories_count:
+          type: integer
+          description: 閲覧履歴数
+          example: 1
+
+    # === Restaurant ===
+    RestaurantBase:
+      type: object
+      description: レストラン共通フィールド
+      properties:
+        name:
+          type: string
+          description: 店舗名
+          example: レストラン プレミアム 1
+        logo_image:
+          type: string
+          nullable: true
+          description: ロゴ画像URL
+          example: https://imgfp.hotp.jp/IMGH/00/00/P000000.jpg
+        access:
+          type: string
+          nullable: true
+          description: 交通アクセス
+          example: 有楽町駅から徒歩1分
+        catch:
+          type: string
+          nullable: true
+          description: キャッチコピー
+          example: 都会の喧騒を忘れる隠れ家空間で、至福のひとときを。
+        genre_name:
+          type: string
+          nullable: true
+          description: ジャンル名
+          example: 和食
+        budget_name:
+          type: string
+          nullable: true
+          description: 予算名
+          example: 4001～5000円
+
+    RestaurantSummary:
+      description: レストランキャッシュのサマリー情報（一覧表示用）
+      allOf:
+        - $ref: "#/components/schemas/RestaurantBase"
+        - type: object
+          properties:
+            id:
+              type: string
+              description: HotPepper店舗ID
+              example: J001234567
+
+    RestaurantViewRequest:
+      description: |
+        フロントエンドがホットペッパーAPIから取得した店舗データを送信する。
+        レストランキャッシュの更新と閲覧履歴の記録に使用する。
+      allOf:
+        - $ref: "#/components/schemas/RestaurantBase"
+        - type: object
+          required: [name]
+
+    # === Favorites ===
+    FavoriteRequest:
+      description: |
+        お気に入り登録リクエスト。
+        レストランキャッシュに未登録の場合は同時にキャッシュを作成するため、店舗情報を含める。
+      allOf:
+        - $ref: "#/components/schemas/RestaurantBase"
+        - type: object
+          required: [restaurant_id, name]
+          properties:
+            restaurant_id:
+              type: string
+              description: HotPepper店舗ID
+              example: J001234567
+
+    FavoriteListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/FavoriteItem"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+
+    FavoriteItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: お気に入りID
+          example: 1
+        restaurant:
+          $ref: "#/components/schemas/RestaurantSummary"
+        created_at:
+          type: string
+          format: date-time
+          description: お気に入り登録日時
+          example: "2026-02-17T10:30:00+09:00"
+
+
+
+    # === Histories ===
+    HistoryListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/HistoryItem"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+
+    HistoryItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 閲覧履歴ID
+          example: 1
+        restaurant:
+          $ref: "#/components/schemas/RestaurantSummary"
+        created_at:
+          type: string
+          format: date-time
+          description: 初回閲覧日時
+          example: "2026-02-17T10:30:00+09:00"
+        updated_at:
+          type: string
+          format: date-time
+          description: 最終閲覧日時
+          example: "2026-02-17T15:00:00+09:00"
+
+    # === Common ===
+    Pagination:
+      type: object
+      description: ページネーション情報
+      properties:
+        current_page:
+          type: integer
+          description: 現在のページ番号
+          example: 1
+        last_page:
+          type: integer
+          description: 最終ページ番号
+          example: 3
+        per_page:
+          type: integer
+          description: 1ページあたりの件数
+          example: 10
+        total:
+          type: integer
+          description: 総件数
+          example: 25
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: メッセージ
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: エラーメッセージ
+          example: 認証に失敗しました
+
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+          description: エラーメッセージ
+          example: 入力内容に誤りがあります
+        errors:
+          type: object
+          description: フィールドごとのエラーメッセージ
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            login_id:
+              - ログインIDは必須です
+            password:
+              - パスワードは8文字以上で入力してください
