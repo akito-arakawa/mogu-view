@@ -91,7 +91,7 @@ export function RestaurantDetail({ shop }: RestaurantDetailProps) {
           className="flex-1"
         >
           <Button variant="primary" size="lg" fullWidth>
-            予約・公式サイト
+            予約サイト
           </Button>
         </a>
         <a

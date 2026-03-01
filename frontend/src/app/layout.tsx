@@ -9,7 +9,7 @@ const notoSansJP = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
-  title: "グルメサーチ",
+  title: "もぐビュー",
   description: "ホットペッパーグルメAPIを活用したレストラン検索アプリ",
 };
 
