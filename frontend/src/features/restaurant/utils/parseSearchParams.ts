@@ -19,8 +19,8 @@ export function parseSearchParams(
   raw: RawSearchParams,
 ): HotPepperSearchParams {
   return {
-    lat: parseFloat_(raw.lat, DEFAULT_LAT),
-    lng: parseFloat_(raw.lng, DEFAULT_LNG),
+    lat: parseNumber(raw.lat, DEFAULT_LAT),
+    lng: parseNumber(raw.lng, DEFAULT_LNG),
     range: parseRange(raw.range),
     keyword: parseString(raw.keyword),
     page: parsePageNumber(raw.page, DEFAULT_PAGE_NUMBER),
@@ -32,7 +32,7 @@ const VALID_RANGES = new Set<number>(
 );
 
 
-function parseFloat_(
+function parseNumber(
   value: string | string[] | undefined,
   fallback: number,
 ): number {
