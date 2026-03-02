@@ -109,4 +109,4 @@ export const FEATURES = [
         "過去に見たお店を自動で記録。「あのお店なんだっけ？」がなくなります。",
       href: "/history",
     },
-  ] as const;
+] as const;
