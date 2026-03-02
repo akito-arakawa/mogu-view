@@ -29,6 +29,12 @@ const sizeStyles: Record<ButtonSize, string> = {
   lg: "px-8 py-4 text-base rounded-2xl",
 };
 
+const spinnerSizeMap: Record<ButtonSize, "sm" | "md"> = {
+  sm: "sm",
+  md: "sm",
+  lg: "md",
+};
+
 export function Button({
   variant = "primary",
   size = "md",
@@ -58,7 +64,7 @@ export function Button({
       disabled={disabled || isLoading}
       {...props}
     >
-      {isLoading && <Spinner size={size} />}
+      {isLoading && <Spinner size={spinnerSizeMap[size]} />}
       {children}
     </button>
   );

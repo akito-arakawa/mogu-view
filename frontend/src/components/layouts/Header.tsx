@@ -42,7 +42,7 @@ export function Header() {
           </button>
 
           <Link
-            href="/"
+            href="/home"
             className="hidden items-center gap-2.5 md:flex"
           >
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-base font-bold text-white shadow-md shadow-orange-500/30">
@@ -62,7 +62,7 @@ export function Header() {
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-base font-bold text-white shadow-md shadow-orange-500/30">
             M
           </span>
-          <span className="hidden text-lg font-bold tracking-tight text-foreground min-[400px]:inline">
+          <span className="text-lg font-bold tracking-tight text-foreground">
             もぐビュー
           </span>
         </Link>
@@ -93,9 +93,9 @@ export function Header() {
 
         {/* ─── ログインボタン（右・常時表示） ─── */}
         <Link
-          href="/login"
+          href="#"
           className="shrink-0 rounded-full border-2 border-primary px-3 py-1.5 text-xs font-bold text-primary transition-all hover:bg-primary hover:text-white hover:shadow-lg hover:shadow-orange-500/25 min-[400px]:px-5 min-[400px]:text-sm"
-        >
+       >
           ログイン
         </Link>
       </div>
