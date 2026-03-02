@@ -86,15 +86,15 @@ export const FEATURES = [
       href: "/search",
     },
     {
-      emoji: "🔍",
+      emoji: "🎰",
       bg: "bg-blue-50",
-      title: "キーワード検索",
+      title: "ルーレット",
       description:
-        "食べたい料理やお店の雰囲気で検索。ジャンルや予算での絞り込みにも対応。",
-      href: "/search",
+        "タグを選択して条件に合うお店をランダムで一覧表示します。",
+      href: "/roulette",
     },
     {
-      emoji: "⭐",
+      emoji: "❤️",
       bg: "bg-amber-50",
       title: "お気に入り保存",
       description:
