@@ -62,7 +62,7 @@ export function Header() {
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-base font-bold text-white shadow-md shadow-orange-500/30">
             M
           </span>
-          <span className="hidden text-lg font-bold tracking-tight text-foreground min-[400px]:inline">
+          <span className="text-lg font-bold tracking-tight text-foreground min-[400px]:inline">
             もぐビュー
           </span>
         </Link>
