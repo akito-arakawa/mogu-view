@@ -54,7 +54,7 @@ export default function SearchForm() {
   const [isSearching, startSearchTransition] = useTransition();
 
   // 検索ボタンクリック時の処理
-  const handleSearch = useCallback(() => {
+  const handleSearch = () => {
     startSearchTransition(() => {
       const params = new URLSearchParams({
         lat: position.lat.toString(),
@@ -66,7 +66,7 @@ export default function SearchForm() {
       }
       router.push(`/search/results?${params.toString()}`);
     });
-  }, [router, position, range, keyword, startSearchTransition]);
+  };
 
   // 検索範囲のメートル数を取得
   const radiusMeters =

@@ -56,7 +56,7 @@ export function RestaurantCard({ restaurant, className }: RestaurantCardProps) {
         </div>
 
         {/* 予算・アクセス */}
-        <div className="mt-2 flex flex-col gap-x-4 gap-y-1 text-xs text-gray-500">
+        <div className="mt-2 flex flex-col gap-y-1 text-xs text-gray-500">
           {budgetName && (
             <span className="flex items-center gap-1">
               <WalletIcon />
