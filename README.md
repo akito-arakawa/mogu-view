@@ -103,19 +103,12 @@ NEXT_PUBLIC_HOTPEPPER_API_KEY=your_api_key_here
 
 #### バックエンド
 ```bash
-cp backend/src/.env.example backend/src/.env.example
+cp backend/src/.env.example backend/src/.env
 ```
-.envの変更
-`CONNECTIONとHOSTとPORTを変更する`
-```
-DB_CONNECTION=mysql
-DB_HOST=mysql
-DB_PORT=3306
-```
-
+`backend/src/.env` の `DB_PASSWORD` に、ルートの `.env` の `MYSQL_PASSWORD` と同じ値を設定する
 #### docker 
 ```bash
-cp .env.exmaple .env
+cp .env.example .env
 ```
 
 ### 3. フロントエンドの起動
@@ -145,7 +138,7 @@ apiチェック
 ```bash
 curl http://localhost:8080/api/health
 ```
-こちらが返ってきてたらOK`{ stasus: "ok" }`
+こちらが返ってきてたらOK`{ status: "ok" }`
 
 コンテナ停止
 ```bash
