@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class HealthTest extends TestCase
@@ -11,9 +9,10 @@ class HealthTest extends TestCase
     /**
      * A basic feature test example.
      */
-    public function test_example(): void
+    public function test_health_api(): void
     {
-        $response = $this->get('/api/health');
+        $response = $this->getJson('/api/health');
+        $response->assertOk();
         $response->assertJson([
             "status" => "ok"
         ]);
