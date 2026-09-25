@@ -89,7 +89,7 @@ git clone <repository-url>
 ```
 
 ### 2. 環境変数の設定
-
+#### フロントエンド
 ```bash
 cp frontend/.env.example frontend/.env.local
 ```
@@ -101,6 +101,16 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:8080/api/v1
 NEXT_PUBLIC_HOTPEPPER_API_KEY=your_api_key_here
 ```
 
+#### バックエンド
+```bash
+cp backend/src/.env.example backend/src/.env
+```
+`backend/src/.env` の `DB_PASSWORD` に、ルートの `.env` の `MYSQL_PASSWORD` と同じ値を設定する
+#### docker 
+```bash
+cp .env.example .env
+```
+
 ### 3. フロントエンドの起動
 
 ```bash
@@ -110,6 +120,31 @@ npm run dev
 ```
 
 http://localhost:3000 でアクセスできる。
+
+### 4.バックエンドの起動
+
+```bash
+docker compose up -d                                     # コンテナ起動
+docker exec -it gourmet-php composer install              # 依存パッケージインストール
+docker exec -it gourmet-php php artisan key:generate      # アプリキー生成
+docker exec -it gourmet-php php artisan migrate           # マイグレーション実行
+```
+`補足`
+DBリセットしたい場合
+```
+docker exec -it gourmet-php php artisan migrate:fresh     # DB リセット＋再マイグレーション
+```
+apiチェック
+```bash
+curl http://localhost:8080/api/health
+```
+こちらが返ってきてたらOK`{ status: "ok" }`
+
+コンテナ停止
+```bash
+docker compose down                                      # コンテナ停止
+```
+
 
 ## プロジェクト構成
 

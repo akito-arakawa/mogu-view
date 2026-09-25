@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     container_name: gourmet-nginx
     ports:
-      - "8080:80"
+      - "127.0.0.1:8080:80"
     volumes:
       - ./backend/src:/var/www/html
     depends_on:
@@ -39,7 +39,7 @@ services:
       dockerfile: Dockerfile
     container_name: gourmet-mysql
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
