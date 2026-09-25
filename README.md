@@ -103,12 +103,19 @@ NEXT_PUBLIC_HOTPEPPER_API_KEY=your_api_key_here
 
 #### バックエンド
 ```bash
-cp backend/src.env.example backend/src.env.example
+cp backend/src/.env.example backend/src/.env.example
+```
+.envの変更
+`CONNECTIONとHOSTとPORTを変更する`
+```
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
 ```
 
 #### docker 
 ```bash
-cp .env.example .env
+cp .env.exmaple .env
 ```
 
 ### 3. フロントエンドの起動
@@ -128,13 +135,17 @@ docker compose up -d                                     # コンテナ起動
 docker exec -it gourmet-php composer install              # 依存パッケージインストール
 docker exec -it gourmet-php php artisan key:generate      # アプリキー生成
 docker exec -it gourmet-php php artisan migrate           # マイグレーション実行
+```
+`補足`
+DBリセットしたい場合
+```
 docker exec -it gourmet-php php artisan migrate:fresh     # DB リセット＋再マイグレーション
 ```
 apiチェック
 ```bash
 curl http://localhost:8080/api/health
 ```
-こちらが返ってきてたらOK`{ stasus: "ok }`
+こちらが返ってきてたらOK`{ stasus: "ok" }`
 
 コンテナ停止
 ```bash
